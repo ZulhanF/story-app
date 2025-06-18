@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1e3c72">
+    <title>Story App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="./styles/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    <header>
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <div class="nav-brand">
+                <a href="#/" class="nav-brand-logo"><i class="fas fa-book-open"></i> Story App</a>
+            </div>
+            <div class="nav-links">
+                <a href="#/home" id="nav-home" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="#/add-story" id="nav-add" class="nav-link"><i class="fas fa-plus"></i> Add Story</a>
+                <a href="#/notifications" id="nav-notifications" class="nav-link"><i class="fas fa-bell"></i> Notifications</a>
+                <a href="#/" id="nav-login" class="nav-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="#/register" id="nav-register" class="nav-link"><i class="fas fa-user-plus"></i> Register</a>
+                <span id="nav-user" class="nav-link"></span>
+                <a href="#" id="nav-logout" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content" role="main" tabindex="-1"></main>
+
+    <footer>
+        <p>&copy; 2025 Story App. All rights reserved.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="./scripts/app.js"></script>
+    <script>
+        const mainContent = document.querySelector('#main-content');
+        const skipLink = document.querySelector('.skip-link');
+        
+        skipLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            skipLink.blur();
+            mainContent.focus();
+            mainContent.scrollIntoView();
+        });
+    </script>
+</body>
+</html>
