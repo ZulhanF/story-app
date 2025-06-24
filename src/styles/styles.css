@@ -111,9 +111,20 @@ main {
 
 .story-content {
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+  color: black;
+  visibility: visible;
+  opacity: 1;
 }
 
-.story-item h3 {
+.story-header {
+  margin-bottom: 1rem;
+}
+
+.story-header h3 {
   color: #1e3c72;
   margin-bottom: 0.5rem;
   font-size: 1.2rem;
@@ -122,28 +133,48 @@ main {
   gap: 0.5rem;
 }
 
-.story-item h3 i {
+.story-header h3 i {
   color: #ff6b6b;
 }
 
-.story-item p {
+.story-description {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.story-description p {
   color: #333333;
   margin-bottom: 0.5rem;
   line-height: 1.6;
   font-size: 0.95rem;
 }
 
-.story-item small {
+.story-footer {
+  margin-top: auto;
+  border-top: 1px solid #e9ecef;
+  padding-top: 1rem;
+}
+
+.story-meta {
+  margin-bottom: 1rem;
+}
+
+.story-meta small {
   color: #666;
   font-size: 0.85rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-.story-item small i {
+.story-meta small i {
   color: #427de2;
+  width: 16px;
+}
+
+.story-meta small:last-child {
+  margin-bottom: 0;
 }
 
 /* Map */
@@ -703,13 +734,24 @@ header {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #1e3c72, #427de2);
+  background: linear-gradient(135deg, #007bff, #0056b3);
   color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0.5rem;
 }
 
 .btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0056b3, #004085);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(30, 60, 114, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
 }
 
 .btn-secondary {
@@ -896,5 +938,291 @@ header {
   color: #666;
   margin-bottom: 1.5rem;
   line-height: 1.6;
+}
+
+#bookmarkContainer {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  z-index: 1;
+  position: relative;
+  min-height: 200px;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure bookmark page content is visible */
+.bookmark-page {
+  min-height: 100vh;
+  padding: 2rem;
+  background: transparent;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.bookmark-page .page-title {
+  color: #ffffff;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* General story item styles for bookmark page */
+#bookmark .story-item,
+.bookmark-page .story-item,
+.story-item {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 1;
+}
+
+#bookmark .story-item:hover,
+.bookmark-page .story-item:hover,
+.story-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+#bookmark .story-item img,
+.bookmark-page .story-item img,
+.story-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  display: block;
+}
+
+#bookmark .story-item:hover img,
+.bookmark-page .story-item:hover img,
+.story-item:hover img {
+  transform: scale(1.05);
+}
+
+#bookmark .story-content,
+.bookmark-page .story-content,
+.story-content {
+  padding: 1.5rem;
+  display: block;
+  background: white;
+  color: black;
+  visibility: visible;
+  opacity: 1;
+}
+
+#bookmark .story-item h3,
+.bookmark-page .story-item h3,
+.story-item h3 {
+  color: #1e3c72;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#bookmark .story-item h3 i,
+.bookmark-page .story-item h3 i,
+.story-item h3 i {
+  color: #ff6b6b;
+}
+
+#bookmark .story-item p,
+.bookmark-page .story-item p,
+.story-item p {
+  color: #333333;
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+#bookmark .story-item small,
+.bookmark-page .story-item small,
+.story-item small {
+  color: #666;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+#bookmark .story-item small i,
+.bookmark-page .story-item small i,
+.story-item small i {
+  color: #427de2;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state h3 {
+  color: #1e3c72;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.empty-state p {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.story-image-container {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.story-image-placeholder {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.story-image-placeholder i {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: #adb5bd;
+}
+
+.story-image-placeholder span {
+  font-weight: 500;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c82333, #bd2130);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.btn-delete-bookmark {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
+  margin-top: 0;
+}
+
+.btn-delete-bookmark:hover {
+  background: linear-gradient(135deg, #c82333, #bd2130);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.btn-bookmark-story {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
+  margin-top: 0;
+}
+
+.btn-bookmark-story:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0056b3, #004085);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, #ffc107, #e0a800);
+  color: #212529;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0.5rem;
+}
+
+.btn-warning:hover:not(:disabled) {
+  background: linear-gradient(135deg, #e0a800, #d39e00);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #28a745, #1e7e34);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0.5rem;
+}
+
+.btn-success:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1e7e34, #155724);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
 }
 

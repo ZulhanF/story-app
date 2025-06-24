@@ -6,6 +6,7 @@ import NotificationPage from '../views/notificationUI.js';
 import NotificationPresenter from '../presenters/notificationPresenter.js';
 import AddStoryPresenter from '../presenters/addStoryPresenter.js';
 import AuthModel from '../models/loginModel.js';
+import BookmarkUI from '../views/bookmarkUI.js';
 
 // Initialize AuthModel
 const authModel = new AuthModel('https://story-api.dicoding.dev/v1');
@@ -93,6 +94,21 @@ const routes = {
         } catch (error) {
           console.error('Error initializing notification presenter:', error);
         }
+      }
+    }
+  },
+  '/bookmark': {
+    render: async () => {
+      if (!authModel.getToken()) {
+        window.location.hash = '#/';
+        return '';
+      }
+      document.body.classList.remove('login-page');
+      return await BookmarkUI.render();
+    },
+    afterRender: async () => {
+      if (authModel.getToken()) {
+        await BookmarkUI.afterRender();
       }
     }
   }
@@ -187,6 +203,7 @@ const Router = {
 
     const navLinks = {
       'nav-home': token,
+      'nav-bookmark': token,
       'nav-login': !token,
       'nav-add': token,
       'nav-notifications': token,

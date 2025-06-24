@@ -24,15 +24,49 @@ class StoryView {
       const storyElement = document.createElement("div");
       storyElement.classList.add("story-item");
       storyElement.innerHTML = `
-        <img src="${story.photoUrl}" alt="Gambar dari ${story.name}">
+        <div class="story-image-container">
+          ${story.photoUrl ? 
+            `<img src="${story.photoUrl}" alt="Gambar dari ${story.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : 
+            ''
+          }
+          <div class="story-image-placeholder" style="display: ${story.photoUrl ? 'none' : 'flex'};">
+            <i class="fas fa-image"></i>
+            <span>Gambar tidak tersedia</span>
+          </div>
+        </div>
         <div class="story-content">
-          <h3>${story.name}</h3>
-          <p>${story.description}</p>
-          <small>Diupload pada ${formatDate}</small>
-          <small>Lat: ${story.lat}, Lng: ${story.lon}</small>
+          <div class="story-header">
+            <h3>${story.name}</h3>
+          </div>
+          <div class="story-description">
+            <p>${story.description}</p>
+          </div>
+          <div class="story-footer">
+            <div class="story-meta">
+              <small><i class="fas fa-calendar"></i> Diupload pada ${formatDate}</small>
+              <small><i class="fas fa-map-marker-alt"></i> Lat: ${story.lat}, Lng: ${story.lon}</small>
+            </div>
+            <button class="btn btn-primary btn-bookmark-story" data-id="${story.id}">
+              <i class="fas fa-bookmark"></i> Simpan Bookmark
+            </button>
+          </div>
         </div>
       `;
       this.container.appendChild(storyElement);
+
+      // Tambahkan event listener untuk tombol bookmark
+      const bookmarkBtn = storyElement.querySelector('.btn-bookmark-story');
+      if (bookmarkBtn) {
+        bookmarkBtn.addEventListener('click', () => {
+          if (typeof this.onBookmarkStory === 'function') {
+            this.onBookmarkStory(story);
+          } else {
+            // Fallback: dispatch custom event
+            const event = new CustomEvent('bookmark-story', { detail: story });
+            this.container.dispatchEvent(event);
+          }
+        });
+      }
     });
 
     // Initialize map after stories are rendered
