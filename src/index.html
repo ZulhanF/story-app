@@ -5,9 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1e3c72">
     <title>Story App</title>
+    
+    <!-- PWA Web App Manifest -->
+    <link rel="manifest" href="./public/app.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Story App">
+    <link rel="apple-touch-icon" href="./public/images/icons/maskable-icon-x192.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./public/favicon.png">
+    
+    <!-- External CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    
+    <!-- Application Styles -->
     <link rel="stylesheet" href="./styles/styles.css">
 </head>
 <body>
@@ -38,7 +52,36 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="module" src="./scripts/index.js"></script>
+    
+    <!-- PWA Service Worker Registration -->
     <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', function() {
+                            console.log('New ServiceWorker found!');
+                            const newWorker = registration.installing;
+                            
+                            newWorker.addEventListener('statechange', function() {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('New content is available, refresh the page');
+                                    // You can show a notification to user about update
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+        
+        // Accessibility: Skip link functionality
         const mainContent = document.querySelector('#main-content');
         const skipLink = document.querySelector('.skip-link');
         
@@ -47,6 +90,23 @@
             skipLink.blur();
             mainContent.focus();
             mainContent.scrollIntoView();
+        });
+        
+        // PWA Install Prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Store the event so it can be triggered later
+            deferredPrompt = e;
+            
+            // Optionally, show a custom install button
+            console.log('PWA install prompt available');
+        });
+        
+        // Handle successful installation
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('PWA was installed successfully');
         });
     </script>
 </body>

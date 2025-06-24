@@ -1,10 +1,140 @@
-// Service Worker for Push Notifications
+// Service Worker for PWA with Offline Support and Push Notifications
+
+const CACHE_NAME = 'story-app-v1';
+const OFFLINE_URL = '/offline.html';
+
+// Application Shell files (static resources)
+const APP_SHELL_FILES = [
+  '/',
+  '/index.html',
+  '/offline.html',
+  '/styles/styles.css',
+  '/scripts/index.js',
+  '/scripts/routes/routes.js',
+  '/scripts/views/Homepage.js',
+  '/scripts/views/loginUI.js',
+  '/scripts/views/registerUI.js',
+  '/scripts/views/addStoryUI.js',
+  '/scripts/views/bookmarkUI.js',
+  '/scripts/views/viewStory.js',
+  '/scripts/views/notificationUI.js',
+  '/scripts/presenters/loginPresenter.js',
+  '/scripts/presenters/registerPresenter.js',
+  '/scripts/presenters/addStoryPresenter.js',
+  '/scripts/presenters/bookmarkPresenter.js',
+  '/scripts/presenters/viewStoryPresenter.js',
+  '/scripts/presenters/notificationPresenter.js',
+  '/scripts/models/loginModel.js',
+  '/scripts/models/storyModel.js',
+  '/scripts/models/bookmarkModel.js',
+  '/scripts/models/notificationModel.js',
+  '/scripts/data/api.js',
+  '/scripts/config.js',
+  '/scripts/utils/map.js',
+  '/public/favicon.png',
+  '/public/images/logo.png',
+  '/public/images/icons/icon-x144.png',
+  '/public/images/icons/maskable-icon-x192.png',
+  '/public/images/icons/maskable-icon-x512.png',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap',
+  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+];
+
+// Install event - Cache application shell
+self.addEventListener('install', function(event) {
+  console.log('[ServiceWorker] Install');
+  
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(function(cache) {
+        console.log('[ServiceWorker] Caching app shell');
+        return cache.addAll(APP_SHELL_FILES);
+      })
+      .then(function() {
+        console.log('[ServiceWorker] App shell cached');
+        return self.skipWaiting();
+      })
+      .catch(function(error) {
+        console.log('[ServiceWorker] Error caching app shell:', error);
+      })
+  );
+});
+
+// Activate event - Clean up old caches
+self.addEventListener('activate', function(event) {
+  console.log('[ServiceWorker] Activate');
+  
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (cacheName !== CACHE_NAME) {
+            console.log('[ServiceWorker] Removing old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(function() {
+      console.log('[ServiceWorker] Claiming clients');
+      return self.clients.claim();
+    })
+  );
+});
+
+// Fetch event - Serve from cache, fallback to network
+self.addEventListener('fetch', function(event) {
+  console.log('[ServiceWorker] Fetch', event.request.url);
+  
+  // Handle navigation requests
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .catch(function() {
+          return caches.open(CACHE_NAME)
+            .then(function(cache) {
+              return cache.match(OFFLINE_URL);
+            });
+        })
+    );
+    return;
+  }
+
+  // Handle other requests with cache-first strategy
+  event.respondWith(
+    caches.match(event.request)
+      .then(function(response) {
+        // Return cached version or fetch from network
+        return response || fetch(event.request)
+          .then(function(response) {
+            // Cache valid responses
+            if (response && response.status === 200 && response.type === 'basic') {
+              const responseToCache = response.clone();
+              caches.open(CACHE_NAME)
+                .then(function(cache) {
+                  cache.put(event.request, responseToCache);
+                });
+            }
+            return response;
+          })
+          .catch(function() {
+            // If both cache and network fail, return offline page for navigation
+            if (event.request.destination === 'document') {
+              return caches.match(OFFLINE_URL);
+            }
+          });
+      })
+  );
+});
+
+// Push Notification event
 self.addEventListener('push', function(event) {
   let notificationData = {
     title: 'Story App',
     body: 'You have a new notification!',
-    icon: '/images/logo.png',
-    badge: '/images/logo.png',
+    icon: '/public/images/logo.png',
+    badge: '/public/images/logo.png',
     data: {
       url: '/'
     }
@@ -44,12 +174,12 @@ self.addEventListener('push', function(event) {
       {
         action: 'open',
         title: 'Open App',
-        icon: '/images/logo.png'
+        icon: '/public/images/logo.png'
       },
       {
         action: 'close',
         title: 'Close',
-        icon: '/images/logo.png'
+        icon: '/public/images/logo.png'
       }
     ]
   };
@@ -59,6 +189,7 @@ self.addEventListener('push', function(event) {
   );
 });
 
+// Notification click event
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
 
@@ -85,16 +216,7 @@ self.addEventListener('notificationclick', function(event) {
   );
 });
 
+// Notification close event
 self.addEventListener('notificationclose', function(event) {
   console.log('Notification closed:', event);
 });
-
-// Install event
-self.addEventListener('install', function(event) {
-  self.skipWaiting();
-});
-
-// Activate event
-self.addEventListener('activate', function(event) {
-  event.waitUntil(self.clients.claim());
-}); 
