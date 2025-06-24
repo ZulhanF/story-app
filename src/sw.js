@@ -3,39 +3,23 @@
 const CACHE_NAME = 'story-app-v1';
 const OFFLINE_URL = '/offline.html';
 
-// Application Shell files (static resources)
+// Application Shell files (static resources - webpack build paths)
 const APP_SHELL_FILES = [
   '/',
   '/index.html',
   '/offline.html',
-  '/styles/styles.css',
-  '/scripts/index.js',
-  '/scripts/routes/routes.js',
-  '/scripts/views/Homepage.js',
-  '/scripts/views/loginUI.js',
-  '/scripts/views/registerUI.js',
-  '/scripts/views/addStoryUI.js',
-  '/scripts/views/bookmarkUI.js',
-  '/scripts/views/viewStory.js',
-  '/scripts/views/notificationUI.js',
-  '/scripts/presenters/loginPresenter.js',
-  '/scripts/presenters/registerPresenter.js',
-  '/scripts/presenters/addStoryPresenter.js',
-  '/scripts/presenters/bookmarkPresenter.js',
-  '/scripts/presenters/viewStoryPresenter.js',
-  '/scripts/presenters/notificationPresenter.js',
-  '/scripts/models/loginModel.js',
-  '/scripts/models/storyModel.js',
-  '/scripts/models/bookmarkModel.js',
-  '/scripts/models/notificationModel.js',
-  '/scripts/data/api.js',
-  '/scripts/config.js',
-  '/scripts/utils/map.js',
-  '/public/favicon.png',
-  '/public/images/logo.png',
-  '/public/images/icons/icon-x144.png',
-  '/public/images/icons/maskable-icon-x192.png',
-  '/public/images/icons/maskable-icon-x512.png',
+  '/app.bundle.js', // webpack bundled main app file
+  '/favicon.png',
+  '/images/logo.png',
+  '/images/icons/icon-x144.png',
+  '/images/icons/maskable-icon-x192.png',
+  '/images/icons/maskable-icon-x512.png',
+  '/images/icons/maskable-icon-x48.png',
+  '/images/icons/maskable-icon-x96.png',
+  '/images/icons/maskable-icon-x384.png',
+  '/images/icons/add-x512.png',
+  '/images/icons/bookmark-x512.png',
+  '/app.webmanifest',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
   'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
@@ -50,14 +34,24 @@ self.addEventListener('install', function(event) {
     caches.open(CACHE_NAME)
       .then(function(cache) {
         console.log('[ServiceWorker] Caching app shell');
-        return cache.addAll(APP_SHELL_FILES);
+        // Cache files one by one to avoid failure if one file fails
+        return Promise.allSettled(
+          APP_SHELL_FILES.map(function(url) {
+            return cache.add(url).catch(function(error) {
+              console.warn('[ServiceWorker] Failed to cache:', url, error);
+              return null; // Continue with other files
+            });
+          })
+        );
       })
       .then(function() {
-        console.log('[ServiceWorker] App shell cached');
+        console.log('[ServiceWorker] App shell caching completed');
         return self.skipWaiting();
       })
       .catch(function(error) {
-        console.log('[ServiceWorker] Error caching app shell:', error);
+        console.error('[ServiceWorker] Error during installation:', error);
+        // Don't fail the installation completely
+        return self.skipWaiting();
       })
   );
 });
@@ -133,8 +127,8 @@ self.addEventListener('push', function(event) {
   let notificationData = {
     title: 'Story App',
     body: 'You have a new notification!',
-    icon: '/public/images/logo.png',
-    badge: '/public/images/logo.png',
+    icon: '/images/logo.png',
+    badge: '/images/logo.png',
     data: {
       url: '/'
     }
@@ -174,12 +168,12 @@ self.addEventListener('push', function(event) {
       {
         action: 'open',
         title: 'Open App',
-        icon: '/public/images/logo.png'
+        icon: '/images/logo.png'
       },
       {
         action: 'close',
         title: 'Close',
-        icon: '/public/images/logo.png'
+        icon: '/images/logo.png'
       }
     ]
   };

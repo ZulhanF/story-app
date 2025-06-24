@@ -37,6 +37,10 @@ module.exports = {
           from: path.resolve(__dirname, 'src/sw.js'),
           to: path.resolve(__dirname, 'dist/sw.js'),
         },
+        {
+          from: path.resolve(__dirname, 'src/offline.html'),
+          to: path.resolve(__dirname, 'dist/offline.html'),
+        },
       ],
     }),
   ],
