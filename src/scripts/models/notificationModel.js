@@ -70,7 +70,7 @@ class NotificationModel {
       throw new Error('Service Worker not supported');
     }
 
-    const registration = await navigator.serviceWorker.register('/sw.js');
+    const registration = await navigator.serviceWorker.register('/sw.workbox.bundle.js');
     await navigator.serviceWorker.ready;
     return registration;
   }

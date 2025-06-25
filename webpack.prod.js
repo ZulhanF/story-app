@@ -34,6 +34,7 @@ module.exports = merge(common, {
     new MiniCssExtractPlugin(),
     new GenerateSW({
       swDest: 'sw.workbox.bundle.js',
+      importScripts: ['../src/sw.js'],
     }),
   ],
 });
